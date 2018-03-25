@@ -42,7 +42,7 @@ export default {
         title: '',
         desc: '',
         member: '',
-        status: 'Raw'
+        status: 0
       },
       warningTitle: '',
       warningDesc: '',

@@ -1,78 +1,162 @@
 <template lang="html">
   <div class="container">
-    <div class="tile is-ancestor">
-      <div class="tile is-parent">
-        <article class="tile is-child bordering">
-          <div class="box">
-            <div class="content">
-              <h2>Raw</h2>
-            </div>
-            <button type="button" name="button" class="button is-info" v-on:click="postModal">post</button>
+    <div class="level">
+      <div class="level-left">
+        <div class="level-left">
+          <div class="content">
+            <h1>SpeedKamban</h1>
           </div>
-
-          <div class="tasks notification is-primary onhover" v-for="(backlog, index) in raw" :key="index" v-on:click="detailModal(backlog)">
-            <div class="level">
-              <div class="level-left">
-                <div class="level-item">
+        </div>
+      </div>
+      <div class="level-right">
+        <div class="level-item ml-1">
+          <button type="button" name="button" class="button is-info" v-on:click="postModal">Add New Task</button>
+        </div>
+      </div>
+    </div>
+    <div class="tile is-ancestor">
+      <div class="tile is-parent is-3">
+        <!-- first -->
+        <article class="tile is-child">
+          <div class="bordering">
+            <div class="box violet">
+              <div class="level">
+                <div class="level-left">
                   <div class="content">
-                    <h2 class="has-text-white is-capitalized has-text-weight-semibold">{{backlog.title}}</h2>
+                    <h2 class="has-text-white has-text-weight-bold">Backlog</h2>
                   </div>
                 </div>
               </div>
-              <div class="level-right">
-                <div class="level-item">
-                  <button class="button" type="button" name="back" v-on:click="unclear">-</button>
+            </div>
+
+            <div class="tasks notification is-danger" v-for="(backlog, index) in raw" :key="index">
+              <div class="level">
+                <div class="level-left onhover" v-on:click="detailModal(backlog)">
+                  <div class="level-item">
+                    <div class="content is-clipped">
+                      <p class="has-text-white is-capitalized has-text-weight-semibold is-size-7">{{backlog.title}}</p>
+                    </div>
+                  </div>
                 </div>
-                <div class="level-item">
-                  <button class="button" type="button" name="next" v-on:click="proceed">+</button>
+                <div class="level-right">
+                  <div class="level-item ml-1">
+                    <button v-show="backlog.status > 0" class="button is-small" type="button" name="back" v-on:click="unclear(backlog)">-</button>
+                  </div>
+                  <div class="level-item">
+                    <button v-show="backlog.status < 3" class="button is-small" type="button" name="next" v-on:click="proceed(backlog)">+</button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </article>
       </div>
-      <div class="tile is-parent">
+      <div class="tile is-parent is-3">
+        <!-- second -->
         <article class="tile is-child">
-          <div class="box">
-            <div class="content">
-              <h2>Fresh</h2>
+          <div class="bordering">
+            <div class="box violet">
+              <div class="level">
+                <div class="level-left">
+                  <div class="content">
+                    <h2 class="has-text-white has-text-weight-bold">To-Do</h2>
+                  </div>
+                </div>
+              </div>
             </div>
-            <button type="button" name="button" class="button is-info" v-on:click="postModal">post</button>
+
+            <div class="tasks notification is-warning onhover" v-for="(todo, index) in fresh" :key="index">
+              <div class="level">
+                <div class="level-left onhover" v-on:click="detailModal(todo)">
+                  <div class="level-item">
+                    <div class="content is-clipped">
+                      <p class="has-text-black is-capitalized has-text-weight-semibold is-size-7">{{todo.title}}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="level-right">
+                  <div class="level-item ml-1">
+                    <button v-show="todo.status > 0" class="button is-small" type="button" name="back" v-on:click="unclear(todo)">-</button>
+                  </div>
+                  <div class="level-item">
+                    <button v-show="todo.status < 3" class="button is-small" type="button" name="next" v-on:click="proceed(todo)">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="content notification is-primary" v-for="(todo, index) in fresh" :key="index">
-            <h4 class="has-text-white">{{todo.title}}</h4>
-            <button type="button" name="button" class="button is-info" v-on:click="detailModal">info</button>
+        </article>
+      </div>
+      <div class="tile is-parent is-3">
+        <!-- third -->
+        <article class="tile is-child">
+          <div class="bordering">
+            <div class="box violet">
+              <div class="level">
+                <div class="level-left">
+                  <div class="content">
+                    <h2 class="has-text-white has-text-weight-bold">Executing</h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tasks notification is-primary onhover" v-for="(doing, index) in splat" :key="index">
+              <div class="level">
+                <div class="level-left onhover" v-on:click="detailModal(doing)">
+                  <div class="level-item">
+                    <div class="content is-clipped">
+                      <p class="has-text-white is-capitalized has-text-weight-semibold is-size-7">{{doing.title}}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="level-right">
+                  <div class="level-item ml-1">
+                    <button v-show="doing.status > 0" class="button is-small" type="button" name="back" v-on:click="unclear(doing)">-</button>
+                  </div>
+                  <div class="level-item">
+                    <button v-show="doing.status < 3" class="button is-small" type="button" name="next" v-on:click="proceed(doing)">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </article>
       </div>
-      <div class="tile is-parent">
+      <div class="tile is-parent is-3">
+        <!-- fourth -->
         <article class="tile is-child">
-          <div class="box">
-            <div class="content">
-              <h2>Splat</h2>
+          <div class="bordering">
+            <div class="box violet">
+              <div class="level">
+                <div class="level-left">
+                  <div class="content">
+                    <h2 class="has-text-white has-text-weight-bold">Completed</h2>
+                  </div>
+                </div>
+              </div>
             </div>
-            <button type="button" name="button" class="button is-info" v-on:click="postModal">post</button>
-          </div>
 
-          <div class="content notification is-primary" v-for="(doing, index) in splat" :key="index">
-            <h4 class="has-text-white">{{doing.title}}</h4>
-            <button type="button" name="button" class="button is-info" v-on:click="detailModal">info</button>
-          </div>
-        </article>
-      </div>
-      <div class="tile is-parent">
-        <article class="tile is-child">
-          <div class="box">
-            <div class="content">
-              <h2>Cooked</h2>
+            <div class="tasks notification is-success onhover" v-for="(finished, index) in cooked" :key="index">
+              <div class="level">
+                <div class="level-left onhover" v-on:click="detailModal(finished)">
+                  <div class="level-item">
+                    <div class="content is-clipped">
+                      <p class="has-text-white is-capitalized has-text-weight-semibold is-size-7">{{finished.title}}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="level-right">
+                  <div class="level-item ml-1">
+                    <button v-show="finished.status > 0" class="button is-small" type="button" name="back" v-on:click="unclear(finished)">-</button>
+                  </div>
+                  <div class="level-item">
+                    <button v-show="finished.status < 3" class="button is-small" type="button" name="next" v-on:click="proceed(finished)">+</button>
+                  </div>
+                </div>
+              </div>
             </div>
-            <button type="button" name="button" class="button is-info" v-on:click="postModal">post</button>
-          </div>
-
-          <div class="content notification is-primary" v-for="(finished, index) in cooked" :key="index">
-            <h4 class="has-text-white">{{finished.title}}</h4>
-            <button type="button" name="button" class="button is-info" v-on:click="detailModal">info</button>
           </div>
         </article>
       </div>
@@ -90,7 +174,6 @@
           <NewKanbanForm @newTask="submitKanban" @closeModal="postModalOff"></NewKanbanForm>
         </section>
         <footer class="modal-card-foot">
-          <button class="button is-success">Save changes</button>
           <button class="button" v-on:click="postModalOff">Cancel</button>
         </footer>
       </div>
@@ -105,10 +188,9 @@
         </header>
         <section class="modal-card-body">
           <!-- Content ... -->
-          <ViewKanban :kanbanData="detailKanban"></ViewKanban>
+          <ViewKanban :kanbanData="detailKanban" @closeModal="postModalOff" @updateTask="updateTaskData"></ViewKanban>
         </section>
         <footer class="modal-card-foot">
-          <button class="button is-success">Save changes</button>
           <button class="button" v-on:click="postModalOff">Cancel</button>
         </footer>
       </div>
@@ -143,7 +225,8 @@ export default {
         title: null,
         desc: null,
         member: null,
-        status: null
+        status: null,
+        key: null
       },
       postClass: 'modal',
       detailClass: 'modal'
@@ -155,23 +238,31 @@ export default {
   },
   computed: {
     raw () {
-      return this.kanbans.filter(task => task.status === 'Raw')
+      return this.kanbans.filter(task => task.status === 0)
     },
     fresh () {
-      return this.kanbans.filter(task => task.status === 'fresh')
+      return this.kanbans.filter(task => task.status === 1)
     },
     splat () {
-      return this.kanbans.filter(task => task.status === 'splat')
+      return this.kanbans.filter(task => task.status === 2)
     },
     cooked () {
-      return this.kanbans.filter(task => task.status === 'cooked')
+      return this.kanbans.filter(task => task.status === 3)
     }
   },
   methods: {
     submitKanban (newTask) {
-      console.log(newTask)
       kanbanRef.push(newTask)
-      console.log(this.raw)
+    },
+    updateTaskData (update) {
+      let data = {
+        title: update.title,
+        desc: update.desc,
+        member: update.member,
+        status: update.status
+      }
+      kanbanRef.child(update.key)
+        .set(data)
     },
     postModal () {
       this.postClass = 'modal is-active'
@@ -182,20 +273,23 @@ export default {
       this.detailKanban.desc = kanbanData.desc
       this.detailKanban.member = kanbanData.member
       this.detailKanban.status = kanbanData.status
+      this.detailKanban.key = kanbanData['.key']
     },
     postModalOff () {
       this.postClass = 'modal'
       this.detailClass = 'modal'
-      this.detailKanban.title = ''
-      this.detailKanban.desc = ''
-      this.detailKanban.member = ''
-      this.detailKanban.status = ''
     },
-    proceed () {
-      console.log('proceeding')
+    proceed (task) {
+      let update = task.status + 1
+      kanbanRef.child(task['.key'])
+        .child('status')
+        .set(update)
     },
-    unclear () {
-      console.log('going back...')
+    unclear (task) {
+      let update = task.status - 1
+      kanbanRef.child(task['.key'])
+        .child('status')
+        .set(update)
     }
   }
 
@@ -214,7 +308,7 @@ export default {
   margin: 0;
 }
 .box {
-  background-color: rgb(14, 223, 24);
+  /* background-color: rgb(14, 223, 24); */
 }
 .onhover {
   cursor: pointer;
@@ -226,5 +320,14 @@ export default {
   border-radius: 10px;
   border: 2px solid rgb(150, 150, 255);
   padding: 4px;
+}
+.violet {
+ background-color: #f41664;
+}
+.jade {
+  background-color: #44ed4a;
+}
+.ml-1 {
+  margin-left: 1em;
 }
 </style>
